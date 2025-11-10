@@ -119,25 +119,36 @@ class newChunkie
     function __construct(&$modx, $config = array())
     {
         $this->modx = & $modx;
-        
+
         if(!isset($this->modx->chunkieCache)) $this->modx->chunkieCache = array();
-        
+
         if (!class_exists("PHxParser")) {
             include_once(strtr(realpath(dirname(__FILE__)) . "/phx.parser.class.inc.php", '\\', '/'));
         }
         $this->phx = new PHxParser();
         $this->options['phxcheck'] = (version_compare($this->phx->version, '2.0.0', '>=')) ? 1 : 0;
 
+        $defaults = array(
+            'basepath' => '',
+            'maxdepth' => 4,
+            'parseLazy' => false,
+            'profile' => false,
+            'tpl' => '',
+            'tplWrapper' => '',
+            'queue' => 'default'
+        );
+        $config = is_array($config) ? array_merge($defaults, $config) : $defaults;
+
         $this->depth = 0;
         // Basepath @FILE is prefixed with
-        $this->options['basepath'] = MODX_BASE_PATH . (isset($config['basepath']) ? $config['basepath'] : '');
-        $this->options['maxdepth'] = (integer)(isset($config['maxdepth']) ? $config['maxdepth'] : 4);
+        $this->options['basepath'] = MODX_BASE_PATH . $config['basepath'];
+        $this->options['maxdepth'] = (integer) $config['maxdepth'];
 
-        $this->options['parseLazy'] = (boolean)(isset($config['parseLazy']) ? $config['parseLazy'] : false);
-        $this->options['profile'] = (boolean)(isset($config['profile']) ? $config['profile'] : false);
-        $this->tpl = $this->getTemplateChunk($config['tpl']);
-        $this->tplWrapper = $this->getTemplateChunk($config['tplWrapper']);
-        $this->queue = (isset($config['queue']) ? $config['queue'] : 'default');
+        $this->options['parseLazy'] = (boolean) $config['parseLazy'];
+        $this->options['profile'] = (boolean) $config['profile'];
+        $this->tpl = $config['tpl'] !== '' ? $this->getTemplateChunk($config['tpl']) : '';
+        $this->tplWrapper = $config['tplWrapper'] !== '' ? $this->getTemplateChunk($config['tplWrapper']) : '';
+        $this->queue = $config['queue'];
         $this->placeholders = array();
         $this->templates = array();
         $this->profile = array();

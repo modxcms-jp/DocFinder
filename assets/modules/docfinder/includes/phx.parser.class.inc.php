@@ -14,6 +14,22 @@ class PHxParser
 {
 
     var $placeholders = array();
+    var $name = '';
+    var $version = '';
+    var $user = array();
+    var $cache = array();
+    var $safetags = array();
+    var $console = array();
+    var $debug = 0;
+    var $debugLog = false;
+    var $curPass = 0;
+    var $maxPasses = 50;
+    var $swapSnippetCache = array();
+
+    function __construct($debug = 0, $maxpass = 50)
+    {
+        $this->PHxParser($debug, $maxpass);
+    }
 
     function PHxParser($debug = 0, $maxpass = 50)
     {
@@ -21,8 +37,12 @@ class PHxParser
 
         $this->name = "PHx";
         $this->version = "2.1.3";
-        $this->user["mgrid"] = intval($_SESSION['mgrInternalKey']);
-        $this->user["usrid"] = intval($_SESSION['webInternalKey']);
+        $mgrId = isset($_SESSION['mgrInternalKey']) ? intval($_SESSION['mgrInternalKey']) : 0;
+        $webId = isset($_SESSION['webInternalKey']) ? intval($_SESSION['webInternalKey']) : 0;
+        $this->user = array(
+            "mgrid" => $mgrId,
+            "usrid" => $webId,
+        );
         $this->user["id"] = ($this->user["usrid"] > 0) ? (-$this->user["usrid"]) : $this->user["mgrid"];
         $this->cache["cm"] = array();
         $this->cache["ui"] = array();
