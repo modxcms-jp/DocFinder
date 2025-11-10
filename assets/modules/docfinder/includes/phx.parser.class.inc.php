@@ -15,6 +15,11 @@ class PHxParser
 
     var $placeholders = array();
 
+    function __construct($debug = 0, $maxpass = 50)
+    {
+        $this->PHxParser($debug, $maxpass);
+    }
+
     function PHxParser($debug = 0, $maxpass = 50)
     {
         global $modx;
