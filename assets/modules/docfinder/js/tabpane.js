@@ -48,26 +48,13 @@
 // features
 function hasSupport() {
 
-	if (typeof hasSupport.support != "undefined")
-		return hasSupport.support;
+        if (typeof hasSupport.support != "undefined")
+                return hasSupport.support;
 
-	var ie55 = /msie 5\.[56789]/i.test( navigator.userAgent );
+        hasSupport.support = ( typeof document.implementation != "undefined" &&
+                        document.implementation.hasFeature( "html", "1.0" ) );
 
-	hasSupport.support = ( typeof document.implementation != "undefined" &&
-			document.implementation.hasFeature( "html", "1.0" ) || ie55 )
-
-	// IE55 has a serious DOM1 bug... Patch it!
-	if ( ie55 ) {
-		document._getElementsByTagName = document.getElementsByTagName;
-		document.getElementsByTagName = function ( sTagName ) {
-			if ( sTagName == "*" )
-				return document.all;
-			else
-				return document._getElementsByTagName( sTagName );
-		};
-	}
-
-	return hasSupport.support;
+        return hasSupport.support;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +81,7 @@ function WebFXTabPane( el, bUseCookie ) {
 	this.tabRow.className = "tab-row";
 	el.insertBefore( this.tabRow, el.firstChild );
 
-	var tabIndex = 0;
+        let tabIndex = 0;
 	if ( this.useCookie ) {
 		tabIndex = Number( WebFXTabPane.getCookie( "webfxtab_" + this.element.id ) );
 		if ( isNaN( tabIndex ) )
@@ -127,8 +114,8 @@ WebFXTabPane.prototype.addTabPage = function ( oElement, callBackFnc) { // modif
 	if ( oElement.tabPage == this )	// already added
 		return oElement.tabPage;
 
-	var n = this.pages.length;
-	var tp = this.pages[n] = new WebFXTabPage( oElement, this, n, callBackFnc ); // modified by Raymond
+        const n = this.pages.length;
+        const tp = this.pages[n] = new WebFXTabPage( oElement, this, n, callBackFnc ); // modified by Raymond
 	tp.tabPane = this;
 
 	// move the tab out of the box
@@ -147,31 +134,31 @@ WebFXTabPane.prototype.dispose = function () {
 	this.element = null;
 	this.tabRow = null;
 
-	for (var i = 0; i < this.pages.length; i++) {
-		this.pages[i].dispose();
-		this.pages[i] = null;
-	}
-	this.pages = null;
+        for (let i = 0; i < this.pages.length; i++) {
+                this.pages[i].dispose();
+                this.pages[i] = null;
+        }
+        this.pages = null;
 };
 
 
 
 // Cookie handling
 WebFXTabPane.setCookie = function ( sName, sValue, nDays ) {
-	var expires = "";
-	if ( nDays ) {
-		var d = new Date();
-		d.setTime( d.getTime() + nDays * 24 * 60 * 60 * 1000 );
-		expires = "; expires=" + d.toGMTString();
-	}
+        let expires = "";
+        if ( nDays ) {
+                const d = new Date();
+                d.setTime( d.getTime() + nDays * 24 * 60 * 60 * 1000 );
+                expires = "; expires=" + d.toGMTString();
+        }
 
 	document.cookie = sName + "=" + sValue + expires + "; path=/";
 };
 
 WebFXTabPane.getCookie = function (sName) {
-	var re = new RegExp( "(\;|^)[^;]*(" + sName + ")\=([^;]*)(;|$)" );
-	var res = re.exec( document.cookie );
-	return res != null ? res[3] : null;
+        const re = new RegExp( "(\;|^)[^;]*(" + sName + ")\=([^;]*)(;|$)" );
+        const res = re.exec( document.cookie );
+        return res != null ? res[3] : null;
 };
 
 WebFXTabPane.removeCookie = function ( name ) {
@@ -201,18 +188,18 @@ function WebFXTabPage( el, tabPane, nIndex, callBackFnc ) {
 	this.callBack = callBackFnc;
 	this.index = nIndex;
 
-	var cs = el.childNodes;
-	for (var i = 0; i < cs.length; i++) {
-		if (cs[i].nodeType == 1 && cs[i].className == "tab") {
-			this.tab = cs[i];
-			break;
+        const cs = el.childNodes;
+        for (let i = 0; i < cs.length; i++) {
+                if (cs[i].nodeType == 1 && cs[i].className == "tab") {
+                        this.tab = cs[i];
+                        break;
 		}
 	}
 
 	// insert a tag around content to support keyboard navigation
 
 
-	var a = document.createElement( "SPAN" );
+        const a = document.createElement( "SPAN" );
 	this.aElement = a;
 	a.href = "#";
 	a.onclick = function () { return false; };
@@ -222,26 +209,26 @@ function WebFXTabPage( el, tabPane, nIndex, callBackFnc ) {
 
 
 	// hook up events, using DOM0
-	var oThis = this;
+        const oThis = this;
 	this.tab.onclick = function () { return oThis.select(); };
 	this.tab.onmouseover = function () { WebFXTabPage.tabOver( oThis ); };
 	this.tab.onmouseout = function () { WebFXTabPage.tabOut( oThis ); };
 }
 
 WebFXTabPage.prototype.show = function () {
-	var el = this.tab;
-	var s = el.className + " selected";
-	s = s.replace(/ +/g, " ");
-	el.className = s;
+        const el = this.tab;
+        let s = el.className + " selected";
+        s = s.replace(/ +/g, " ");
+        el.className = s;
 
 	this.element.style.display = "block";
 };
 
 WebFXTabPage.prototype.hide = function () {
-	var el = this.tab;
-	var s = el.className;
-	s = s.replace(/ selected/g, "");
-	el.className = s;
+        const el = this.tab;
+        let s = el.className;
+        s = s.replace(/ selected/g, "");
+        el.className = s;
 
 	this.element.style.display = "none";
 };
@@ -265,34 +252,34 @@ WebFXTabPage.prototype.dispose = function () {
 };
 
 WebFXTabPage.tabOver = function ( tabpage ) {
-	var el = tabpage.tab;
-	var s = el.className + " hover";
-	s = s.replace(/ +/g, " ");
-	el.className = s;
+        const el = tabpage.tab;
+        let s = el.className + " hover";
+        s = s.replace(/ +/g, " ");
+        el.className = s;
 };
 
 WebFXTabPage.tabOut = function ( tabpage ) {
-	var el = tabpage.tab;
-	var s = el.className;
-	s = s.replace(/ hover/g, "");
-	el.className = s;
+        const el = tabpage.tab;
+        let s = el.className;
+        s = s.replace(/ hover/g, "");
+        el.className = s;
 };
 
 
 // This function initializes all uninitialized tab panes and tab pages
 function setupAllTabs() {
-	if ( !hasSupport() ) return;
+        if ( !hasSupport() ) return;
 
-	var all = document.getElementsByTagName( "*" );
-	var l = all.length;
-	var tabPaneRe = /tab\-pane/;
-	var tabPageRe = /tab\-page/;
-	var cn, el;
-	var parentTabPane;
+        const all = document.getElementsByTagName( "*" );
+        const l = all.length;
+        const tabPaneRe = /tab\-pane/;
+        const tabPageRe = /tab\-page/;
+        let cn, el;
+        let parentTabPane;
 
-	for ( var i = 0; i < l; i++ ) {
-		el = all[i]
-		cn = el.className;
+        for ( let i = 0; i < l; i++ ) {
+                el = all[i]
+                cn = el.className;
 
 		// no className
 		if ( cn == "" ) continue;
@@ -310,17 +297,17 @@ function setupAllTabs() {
 }
 
 function disposeAllTabs() {
-	if ( !hasSupport() ) return;
+        if ( !hasSupport() ) return;
 
-	var all = document.getElementsByTagName( "*" );
-	var l = all.length;
-	var tabPaneRe = /tab\-pane/;
-	var cn, el;
-	var tabPanes = [];
+        const all = document.getElementsByTagName( "*" );
+        const l = all.length;
+        const tabPaneRe = /tab\-pane/;
+        let cn, el;
+        const tabPanes = [];
 
-	for ( var i = 0; i < l; i++ ) {
-		el = all[i]
-		cn = el.className;
+        for ( let i = 0; i < l; i++ ) {
+                el = all[i]
+                cn = el.className;
 
 		// no className
 		if ( cn == "" ) continue;
@@ -330,33 +317,38 @@ function disposeAllTabs() {
 			tabPanes[tabPanes.length] = el.tabPane;
 	}
 
-	for (var i = tabPanes.length - 1; i >= 0; i--) {
-		tabPanes[i].dispose();
-		tabPanes[i] = null;
-	}
+        for (let i = tabPanes.length - 1; i >= 0; i--) {
+                tabPanes[i].dispose();
+                tabPanes[i] = null;
+        }
 }
 
 
 // initialization hook up
 
 // DOM2
-if ( typeof window.addEventListener != "undefined" )
-	window.addEventListener( "load", setupAllTabs, false );
-
-// IE
-else if ( typeof window.attachEvent != "undefined" ) {
-	window.attachEvent( "onload", setupAllTabs );
-	window.attachEvent( "onunload", disposeAllTabs );
+if ( typeof window.addEventListener != "undefined" ) {
+        window.addEventListener( "load", setupAllTabs, false );
+        window.addEventListener( "unload", disposeAllTabs, false );
 }
-
 else {
-	if ( window.onload != null ) {
-		var oldOnload = window.onload;
-		window.onload = function ( e ) {
-			oldOnload( e );
-			setupAllTabs();
-		};
-	}
-	else
-		window.onload = setupAllTabs;
+        if ( window.onload != null ) {
+                const oldOnload = window.onload;
+                window.onload = function ( e ) {
+                        oldOnload( e );
+                        setupAllTabs();
+                };
+        }
+        else
+                window.onload = setupAllTabs;
+
+        if ( window.onunload != null ) {
+                const oldOnUnload = window.onunload;
+                window.onunload = function ( e ) {
+                        oldOnUnload( e );
+                        disposeAllTabs();
+                };
+        }
+        else
+                window.onunload = disposeAllTabs;
 }

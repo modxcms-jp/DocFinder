@@ -22,8 +22,8 @@
 
 
 // define global parameters
-var ajaxRequest, delay, timer, oldSearchstring;
-var time = 0;
+let ajaxRequest, delay, timer, oldSearchstring;
+let time = 0;
 
 window.addEvent('load', function () {
 
@@ -128,19 +128,20 @@ window.addEvent('load', function () {
 
 
 // perform AJAX request
-var startAjaxSearch = function () {
+const startAjaxSearch = function () {
     if ($('searchstring').value == "") return;
 
     // check if this a replace
     if ($('replace_mode').value == 1) {
+        let infoText;
         // abort if regular expressions are on
-        if ($('regular_expression').getValue() == "on") var infoText = "The replace function can not be combinded with regular expressions.";
+        if ($('regular_expression').getValue() == "on") infoText = "The replace function can not be combinded with regular expressions.";
 
         // abort if logical operators are used
-        if ($('searchstring').value.test("AND") || $('searchstring').value.test("OR") || $('searchstring').value.test("NOT")) var infoText = "The replace function can not be combined with logic operators.";
+        if ($('searchstring').value.test("AND") || $('searchstring').value.test("OR") || $('searchstring').value.test("NOT")) infoText = "The replace function can not be combined with logic operators.";
 
         // abort if the ALL operator is used
-        if ($('searchstring').value == "ALL") var infoText = "The replace function can not be combined with the ALL operator.";
+        if ($('searchstring').value == "ALL") infoText = "The replace function can not be combined with the ALL operator.";
 
         // alert abort info, reset replace mode var and cancel function
         if (infoText) {
@@ -150,7 +151,7 @@ var startAjaxSearch = function () {
         }
 
         // Ask user for confirmation
-        confirmation = confirm("Replace all instances of “" + $('searchstring').value + "” with “" + $('replacestring').value + "”?");
+        const confirmation = confirm("Replace all instances of “" + $('searchstring').value + "” with “" + $('replacestring').value + "”?");
         if (confirmation == false) {
             $('replace_mode').value = 0;
             return;
@@ -183,7 +184,7 @@ var startAjaxSearch = function () {
     $('update_session').value = 1;
 
     // get search string
-    var searchstring = $('searchstring').getValue();
+    const searchstring = $('searchstring').getValue();
 
     // set results string
     if (searchstring) $('search_string').setText(searchstring);
@@ -223,7 +224,7 @@ var startAjaxSearch = function () {
 
 function updateSearchHistory(type) {
     // set recognition for AJAX mode
-    var querystring = "checkform=ajax_get_" + type + "History";
+    let querystring = "checkform=ajax_get_" + type + "History";
 
     // add CSRF token to request
     if (typeof csrf_token !== 'undefined') {
@@ -231,7 +232,7 @@ function updateSearchHistory(type) {
     }
 
     // get update via AJAX
-    historyAjaxUpdate = new Ajax(window.location.href, {
+    const historyAjaxUpdate = new Ajax(window.location.href, {
         method: 'post',
         update: $(type + '_history_box'),
         autoCancel: true,
@@ -247,7 +248,7 @@ function updateSearchHistory(type) {
 
 
 // refresh time function
-var setTimer = function () {
+const setTimer = function () {
     if (ajaxRequest) {
         // increment timer
         time++;

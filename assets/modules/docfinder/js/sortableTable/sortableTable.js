@@ -10,7 +10,7 @@
 
 **************************************************************/
 
-var sortableTable = new Class({
+const sortableTable = new Class({
 
 	getOptions: function(){
 		return {
@@ -62,18 +62,19 @@ var sortableTable = new Class({
 				el.addEvent('mouseout', function(){
 					el.removeClass('tableHeaderOver');
 				});
-				el.getdate = function(str){
-					// inner util function to convert 2-digit years to 4
-					function fixYear(yr) {
-						yr = +yr;
-						if (yr<50) { yr += 2000; }
-						else if (yr<100) { yr += 1900; }
-						return yr;
-					};
-					var ret;
-					//
-					if (str.length>12){
-						strtime = str.substring(str.lastIndexOf(' ')+1);
+                                el.getdate = function(str){
+                                        // inner util function to convert 2-digit years to 4
+                                        function fixYear(yr) {
+                                                yr = +yr;
+                                                if (yr<50) { yr += 2000; }
+                                                else if (yr<100) { yr += 1900; }
+                                                return yr;
+                                        };
+                                        let ret;
+                                        let strtime;
+                                        //
+                                        if (str.length>12){
+                                                strtime = str.substring(str.lastIndexOf(' ')+1);
 						strtime = strtime.substring(0,2)+strtime.substr(-2)
 					}else{
 						strtime = '0000';
@@ -90,18 +91,18 @@ var sortableTable = new Class({
 					return 999999990000; // So non-parsed dates will be last, not first
 				};
 				//
-				el.findData = function(elem){
-					var child = elem.getFirst();
-					if(child){
-						return el.findData(child);
-					}else{
-						return elem.innerHTML.trim();
-					}
+                                el.findData = function(elem){
+                                        const child = elem.getFirst();
+                                        if(child){
+                                                return el.findData(child);
+                                        }else{
+                                                return elem.innerHTML.trim();
+                                        }
 				};
 				//
-				el.compare = function(a,b){
-					var1 = el.findData(a.getChildren()[i]);
-					var2 = el.findData(b.getChildren()[i]);
+                                el.compare = function(a,b){
+                                        let var1 = el.findData(a.getChildren()[i]);
+                                        let var2 = el.findData(b.getChildren()[i]);
 					//var1 = a.getChildren()[i].firstChild.data;
 					//var2 = b.getChildren()[i].firstChild.data;
 
@@ -164,8 +165,8 @@ var sortableTable = new Class({
 		}
 		//
 		this.options.sortOn = index;
-		var header = this.tHead.getElements('th');
-		var el = header[index];
+                const header = this.tHead.getElements('th');
+                const el = header[index];
 
 		header.each(function(e,i){
 			if(i != index){
@@ -227,15 +228,15 @@ var sortableTable = new Class({
 		});
 	},
 
-	filter: function(form){
-		var form = $(form);
-		var col = 0;
-		var key = '';
+        filter: function(form){
+                const formElement = $(form);
+                let col = 0;
+                let key = '';
 
-		form.getChildren().each(function(el,i){
-			if(el.id == 'column'){
-				col = Number(el.value);
-			}
+                formElement.getChildren().each(function(el,i){
+                        if(el.id == 'column'){
+                                col = Number(el.value);
+                        }
 			if(el.id == 'keyword'){
 				key = el.value.toLowerCase();
 			}

@@ -1,4 +1,4 @@
-var vlaCalendar = new Class({
+const vlaCalendar = new Class({
 	'slideDuration': 500,
 	'fadeDuration': 500,
 	'transition': Fx.Transitions.Quart.easeOut,
@@ -16,7 +16,7 @@ var vlaCalendar = new Class({
 
 		this.loading = false;
 		this.container = _container = $(_container);
-		var _class = this;
+                const _class = this;
 
 		//Insert the base into the container and initialize elements
 		this.u('base', '', function() {
@@ -33,8 +33,8 @@ var vlaCalendar = new Class({
 		this.resetArrows();
 
 		//Retrieve data (label, timestamp etc) which are stored as a Json string in a table attribute
-		var vars = Json.evaluate(this.mainLoader.getElement('table').getProperty('summary'));
-		var _class = this;
+                const vars = Json.evaluate(this.mainLoader.getElement('table').getProperty('summary'));
+                const _class = this;
 
 		//Change the label
 		this.label.removeClass('noHover').setHTML(vars.label)
@@ -48,7 +48,7 @@ var vlaCalendar = new Class({
 		this.arrowRight.onclick = function() { _class.u(vars.current, 'ts=' + vars.nx_ts, function() { _class.slideRight(); }); }
 
 		//Add cell click events
-		var clickables = this.mainLoader.getElements('td');
+                const clickables = this.mainLoader.getElements('td');
 		switch(vars.current) {
 			case 'month':
 				if(this.picker) {
@@ -73,7 +73,7 @@ var vlaCalendar = new Class({
 
 	//Ajax update function which handles all requests
 	u: function(_url, _pars, _onComplete, _id) {
-		var _class = this;
+                const _class = this;
 		if(!this.loading) {
 			this.loading = true;
 			//if(this.arrowLeft) this.resetArrows();
@@ -88,7 +88,7 @@ var vlaCalendar = new Class({
 	},
 
 	slideLeft: function() {
-		var _class = this;
+                const _class = this;
 		this.loading = true;
 		this.tempLoader.effect('margin-left', {duration: this.slideDuration, transition: this.transition}).start(-164, 0);
 		this.mainLoader.effect('margin-left', {duration: this.slideDuration, transition: this.transition}).start(0, 164).
@@ -97,7 +97,7 @@ var vlaCalendar = new Class({
 	},
 
 	slideRight: function() {
-		var _class = this;
+                const _class = this;
 		this.loading = true;
 		this.mainLoader.effect('margin-left', {duration: this.slideDuration, transition: this.transition}).start(0, -164);
 		this.tempLoader.effect('margin-left', {duration: this.slideDuration, transition: this.transition}).start(164, 0).
@@ -106,7 +106,7 @@ var vlaCalendar = new Class({
 	},
 
 	fade: function() {
-		var _class = this;
+                const _class = this;
 		this.loading = true;
 		this.tempLoader.setStyles({'opacity': 0, 'margin-left': 0});
 		this.mainLoader.effect('opacity', {duration: this.fadeDuration, transition: this.transition}).start(1, 0);
@@ -138,7 +138,7 @@ var vlaCalendar = new Class({
 	}
 });
 
-var vlaDatePicker = vlaCalendar.extend({
+const vlaDatePicker = vlaCalendar.extend({
 	'separateInput': false,
 	'separator': '/',
 	'format': 'd/m/y',
@@ -169,7 +169,7 @@ var vlaDatePicker = vlaCalendar.extend({
 		this.parent(this.pickerContent);
 
 		//Add events for showing and hiding the picker
-		var _class = this;
+                const _class = this;
 		(this.openWith ? $(this.openWith) : this.element)
 			.addEvent('focus',  function() { _class.show(); })
 			.addEvent('click',  function() { _class.openWith ? _class.toggle() : _class.show(); })
@@ -184,13 +184,13 @@ var vlaDatePicker = vlaCalendar.extend({
 
 	position: function() {
 		//Determine where the picker needs to be positioned
-		var top, left;
+                let top, left;
 		switch(this.alignX) {
 			case 'left':
 				left = this.element.getLeft();
 				break;
 			case 'center':
-				var pickerMiddle = (parseInt(this.pickerContent.getStyle('width')) / 2);
+                                let pickerMiddle = (parseInt(this.pickerContent.getStyle('width')) / 2);
 				if(pickerMiddle == 0) pickerMiddle = 83;
 				left = this.element.getLeft() + (this.element.getSize().size.x / 2) - pickerMiddle -
 						((parseInt(this.pickerContent.getStyle('padding-left')) + parseInt(this.pickerContent.getStyle('padding-right'))) / 2);
@@ -221,7 +221,7 @@ var vlaDatePicker = vlaCalendar.extend({
 		this.position();
 		if(!this.visible) {
 			this.visible = true;
-			var _class = this;
+                    const _class = this;
 			this.picker.setStyles({ 'opacity': 0, 'display': 'inline' });
 			if(window.ie7) this.picker.setStyle('background-color', this.ieTransitionColor); // <- Ugly transition fix for IE browsers
 			this.picker.effect('opacity', {duration: this.fadeDuration, transition: this.transition}).start(0, 1)
@@ -232,7 +232,7 @@ var vlaDatePicker = vlaCalendar.extend({
 	hide: function() {
 		if(this.visible) {
 			this.visible = false;
-			var _class = this;
+                    const _class = this;
 			if(window.ie7) this.picker.setStyle('background-color', this.ieTransitionColor); // <- Ugly transition fix for IE browsers
 			this.picker.effect('opacity', { duration: this.fadeDuration, transition: this.transition }).start(1, 0)
 				.addEvent('onComplete', function() { _class.picker.setStyle('display', 'none'); _class.outsideHide = false; } );
@@ -266,20 +266,15 @@ var vlaDatePicker = vlaCalendar.extend({
 	},
 
 	outsideClick: function(event, element) {
-		var mousePos = this.getMousePos(event);
-		var elementData = element.getCoordinates();
+            const mousePos = this.getMousePos(event);
+            const elementData = element.getCoordinates();
 
 		return (mousePos.x > elementData.left && mousePos.x < (elementData.left + elementData.width)) &&
 			   (mousePos.y > elementData.top  && mousePos.y < (elementData.top + elementData.height)) ? false : true;
 	},
 
-	getMousePos: function(e) {
-		if(document.all) {
-			return { 'x': window.event.clientX + window.getScrollLeft(),
-					 'y': window.event.clientY + window.getScrollTop() };
-		} else {
-			return { 'x': e.pageX,
-					 'y': e.pageY };
-		}
-	}
+        getMousePos: function(e) {
+                return { 'x': e ? e.pageX : 0,
+                                 'y': e ? e.pageY : 0 };
+        }
 });
