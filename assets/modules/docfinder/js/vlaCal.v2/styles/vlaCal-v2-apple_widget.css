@@ -5,11 +5,7 @@
 /* Picker */
 
 .apple_widget .pickerBackground {
-	background-image: url('../images/apple_widget/calendar_background.png');
-}
-/* Background for IE6 - code does not validate as it is a hack */
-*html .apple_widget .pickerBackground {
-	background-image: url('../images/apple_widget/calendar_background.gif');
+        background-image: url('../images/apple_widget/calendar_background.png');
 }
 
 /* Calender */

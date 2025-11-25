@@ -109,36 +109,16 @@ var Abstract = function (a) {
 var Window = new Abstract(window);
 var Document = new Abstract(document);
 document.head = document.getElementsByTagName("head")[0];
-window.xpath = !!(document.evaluate);
-if (window.ActiveXObject) {
-    window.ie = window[window.XMLHttpRequest ? "ie7" : "ie6"] = true
-} else {
-    if (document.childNodes && !document.all && !navigator.taintEnabled) {
-        window.webkit = window[window.xpath ? "webkit420" : "webkit419"] = true
-    } else {
-        if (document.getBoxObjectFor != null || window.mozInnerScreenX != null) {
-            window.gecko = true
-        }
-    }
-}
-window.khtml = window.webkit;
+window.xpath = typeof document.evaluate === "function";
+window.ie = window.ie6 = window.ie7 = window.ie9 = false;
 Object.extend = $extend;
 if (typeof HTMLElement == "undefined") {
     var HTMLElement = function () {
     };
-    if (window.webkit) {
-        document.createElement("iframe")
-    }
-    HTMLElement.prototype = (window.webkit) ? window["[[DOMElement.prototype]]"] : {}
+    HTMLElement.prototype = {}
 }
 HTMLElement.prototype.htmlElement = function () {
 };
-if (window.ie6) {
-    try {
-        document.execCommand("BackgroundImageCache", false, true)
-    } catch (e) {
-    }
-}
 var Class = function (b) {
     var a = function () {
         return(arguments[0] !== null && this.initialize && $type(this.initialize) == "function") ? this.initialize.apply(this, arguments) : this
@@ -395,7 +375,7 @@ Function.extend({create: function (a) {
     return function (f) {
         var c;
         if (a.event) {
-            f = f || window.event;
+            f = f || {};
             c = [(a.event === true) ? f : new a.event(f)];
             if (a.arguments) {
                 c.extend(a.arguments)
@@ -450,13 +430,6 @@ Number.extend({toInt: function () {
 }});
 var Element = new Class({initialize: function (d, c) {
     if ($type(d) == "string") {
-        if (window.ie && c && (c.name || c.type)) {
-            var a = (c.name) ? ' name="' + c.name + '"' : "";
-            var b = (c.type) ? ' type="' + c.type + '"' : "";
-            delete c.name;
-            delete c.type;
-            d = "<" + d + a + b + ">"
-        }
         d = document.createElement(d)
     }
     d = $(d);
@@ -656,7 +629,7 @@ Element.extend({set: function (a) {
         case"opacity":
             return this.setOpacity(parseFloat(a));
         case"float":
-            b = (window.ie) ? "styleFloat" : "cssFloat"
+            b = "cssFloat"
     }
     b = b.camelCase();
     switch ($type(a)) {
@@ -688,12 +661,6 @@ Element.extend({set: function (a) {
         if (this.style.visibility != "visible") {
             this.style.visibility = "visible"
         }
-    }
-    if (!this.currentStyle || !this.currentStyle.hasLayout) {
-        this.style.zoom = 1
-    }
-    if (window.ie) {
-        this.style.filter = (a == 1) ? "" : "alpha(opacity=" + a * 100 + ")"
     }
     this.style.opacity = this.$tmp.opacity = a;
     return this
@@ -735,14 +702,7 @@ Element.extend({set: function (a) {
         }
         if (document.defaultView) {
             a = document.defaultView.getComputedStyle(this, null).getPropertyValue(c.hyphenate())
-        } else {
-            if (this.currentStyle) {
-                a = this.currentStyle[c]
-            }
         }
-    }
-    if (window.ie) {
-        a = Element.fixStyle(c, a, this)
     }
     if (a && c.test(/color/i) && a.contains("rgb")) {
         return a.split("rgb").splice(1, 4).map(function (f) {
@@ -779,11 +739,7 @@ Element.extend({set: function (a) {
         return this[b]
     }
     var a = Element.PropertiesIFlag[d] || 0;
-    if (!window.ie || a) {
-        return this.getAttribute(d, a)
-    }
-    var c = this.attributes[d];
-    return(c) ? c.nodeValue : null
+    return this.getAttribute(d, a)
 }, removeProperty: function (b) {
     var a = Element.Properties[b];
     if (a) {
@@ -810,61 +766,25 @@ Element.extend({set: function (a) {
 }, setText: function (b) {
     var a = this.getTag();
     if (["style", "script"].contains(a)) {
-        if (window.ie) {
-            if (a == "style") {
-                this.styleSheet.cssText = b
-            } else {
-                if (a == "script") {
-                    this.setProperty("text", b)
-                }
-            }
-            return this
-        } else {
-            this.removeChild(this.firstChild);
-            return this.appendText(b)
-        }
+        this.textContent = b;
+        return this
     }
-    this[$defined(this.innerText) ? "innerText" : "textContent"] = b;
+    this.textContent = b;
     return this
 }, getText: function () {
     var a = this.getTag();
     if (["style", "script"].contains(a)) {
-        if (window.ie) {
-            if (a == "style") {
-                return this.styleSheet.cssText
-            } else {
-                if (a == "script") {
-                    return this.getProperty("text")
-                }
-            }
-        } else {
-            return this.innerHTML
-        }
+        return this.textContent
     }
-    return($pick(this.innerText, this.textContent))
+    return this.textContent
 }, getTag: function () {
     return this.tagName.toLowerCase()
 }, empty: function () {
     Garbage.trash(this.getElementsByTagName("*"));
     return this.setHTML("")
 }});
-Element.fixStyle = function (f, a, d) {
-    if ($chk(parseInt(a))) {
-        return a
-    }
-    if (["height", "width"].contains(f)) {
-        var b = (f == "width") ? ["left", "right"] : ["top", "bottom"];
-        var c = 0;
-        b.each(function (g) {
-            c += d.getStyle("border-" + g + "-width").toInt() + d.getStyle("padding-" + g).toInt()
-        });
-        return d["offset" + f.capitalize()] - c + "px"
-    } else {
-        if (f.test(/border(.+)Width|margin|padding/)) {
-            return"0px"
-        }
-    }
-    return a
+Element.fixStyle = function () {
+    return null
 };
 Element.Styles = {border: [], padding: [], margin: []};
 ["Top", "Right", "Bottom", "Left"].each(function (b) {
@@ -891,15 +811,11 @@ Element.PropertiesIFlag = {href: 2, src: 2};
 Element.Methods = {Listeners: {addListener: function (b, a) {
     if (this.addEventListener) {
         this.addEventListener(b, a, false)
-    } else {
-        this.attachEvent("on" + b, a)
     }
     return this
 }, removeListener: function (b, a) {
     if (this.removeEventListener) {
         this.removeEventListener(b, a, false)
-    } else {
-        this.detachEvent("on" + b, a)
     }
     return this
 }}};
@@ -937,16 +853,13 @@ var Garbage = {elements: [], collect: function (a) {
 }};
 window.addListener("beforeunload", function () {
     window.addListener("unload", Garbage.empty);
-    if (window.ie) {
-        window.addListener("unload", CollectGarbage)
-    }
 });
 var Event = new Class({initialize: function (c) {
     if (c && c.$extended) {
         return c
     }
     this.$extended = true;
-    c = c || window.event;
+    c = c || {};
     this.event = c;
     this.type = c.type;
     this.target = c.target || c.srcElement;
@@ -957,8 +870,8 @@ var Event = new Class({initialize: function (c) {
     this.control = c.ctrlKey;
     this.alt = c.altKey;
     this.meta = c.metaKey;
-    if (["DOMMouseScroll", "mousewheel"].contains(this.type)) {
-        this.wheel = (c.wheelDelta) ? c.wheelDelta / 120 : -(c.detail || 0) / 3
+    if (this.type === "wheel") {
+        this.wheel = c.deltaY ? -c.deltaY / 40 : (c.wheelDelta ? c.wheelDelta / 120 : 0)
     } else {
         if (this.type.contains("key")) {
             this.code = c.which || c.keyCode;
@@ -1020,7 +933,7 @@ Event.fix = {relatedTarget: function () {
         this.relatedTarget = this.target
     }
 }};
-Event.prototype.fixRelatedTarget = (window.gecko) ? Event.fix.relatedTargetGecko : Event.fix.relatedTarget;
+Event.prototype.fixRelatedTarget = Event.fix.relatedTarget;
 Event.keys = new Abstract({enter: 13, up: 38, down: 40, left: 37, right: 39, esc: 27, space: 32, backspace: 8, tab: 9, "delete": 46});
 Element.Methods.Events = {addEvent: function (c, b) {
     this.$events = this.$events || {};
@@ -1124,8 +1037,8 @@ Element.Events = new Abstract({mouseenter: {type: "mouseover", map: function (a)
     if (a.relatedTarget != this && !this.hasChild(a.relatedTarget)) {
         this.fireEvent("mouseleave", a)
     }
-}}, mousewheel: {type: (window.gecko) ? "DOMMouseScroll" : "mousewheel"}});
-Element.NativeEvents = ["click", "dblclick", "mouseup", "mousedown", "mousewheel", "DOMMouseScroll", "mouseover", "mouseout", "mousemove", "keydown", "keypress", "keyup", "load", "unload", "beforeunload", "resize", "move", "focus", "blur", "change", "submit", "reset", "select", "error", "abort", "contextmenu", "scroll"];
+}}, mousewheel: {type: "wheel"}});
+Element.NativeEvents = ["click", "dblclick", "mouseup", "mousedown", "wheel", "mouseover", "mouseout", "mousemove", "keydown", "keypress", "keyup", "load", "unload", "beforeunload", "resize", "move", "focus", "blur", "change", "submit", "reset", "select", "error", "abort", "contextmenu", "scroll"];
 Function.extend({bindWithEvent: function (b, a) {
     return this.create({bind: b, "arguments": a, event: Event})
 }});
@@ -1375,64 +1288,23 @@ Element.Events.domready = {add: function (b) {
         window.timer = $clear(window.timer);
         this.fireEvent("domready")
     }.bind(this);
-    if (document.readyState && window.webkit) {
-        window.timer = function () {
-            if (["loaded", "complete"].contains(document.readyState)) {
-                a()
-            }
-        }.periodical(50)
-    } else {
-        if (document.readyState && window.ie) {
-            if (!$("ie_ready")) {
-                var c = (window.location.protocol == "https:") ? "//:" : "javascript:void(0)";
-                document.write('<script id="ie_ready" defer src="' + c + '"><\/script>');
-                $("ie_ready").onreadystatechange = function () {
-                    if (this.readyState == "complete") {
-                        a()
-                    }
-                }
-            }
-        } else {
-            window.addListener("load", a);
-            document.addListener("DOMContentLoaded", a)
-        }
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        setTimeout(a, 0)
     }
+    window.addListener("load", a);
+    document.addListener("DOMContentLoaded", a)
 }};
 window.onDomReady = function (a) {
     return this.addEvent("domready", a)
 };
 window.extend({getWidth: function () {
-    if (this.webkit419) {
-        return this.innerWidth
-    }
-    if (this.opera) {
-        return document.body.clientWidth
-    }
-    return document.documentElement.clientWidth
+    return this.innerWidth || document.documentElement.clientWidth
 }, getHeight: function () {
-    if (this.webkit419) {
-        return this.innerHeight
-    }
-    if (this.opera) {
-        return document.body.clientHeight
-    }
-    return document.documentElement.clientHeight
+    return this.innerHeight || document.documentElement.clientHeight
 }, getScrollWidth: function () {
-    if (this.ie) {
-        return Math.max(document.documentElement.offsetWidth, document.documentElement.scrollWidth)
-    }
-    if (this.webkit) {
-        return document.body.scrollWidth
-    }
-    return document.documentElement.scrollWidth
+    return Math.max(document.documentElement.offsetWidth, document.documentElement.scrollWidth, document.body.scrollWidth)
 }, getScrollHeight: function () {
-    if (this.ie) {
-        return Math.max(document.documentElement.offsetHeight, document.documentElement.scrollHeight)
-    }
-    if (this.webkit) {
-        return document.body.scrollHeight
-    }
-    return document.documentElement.scrollHeight
+    return Math.max(document.documentElement.offsetHeight, document.documentElement.scrollHeight, document.body.scrollHeight)
 }, getScrollLeft: function () {
     return this.pageXOffset || document.documentElement.scrollLeft
 }, getScrollTop: function () {
@@ -1669,16 +1541,16 @@ Fx.Elements = Fx.Base.extend({initialize: function (b, a) {
 Fx.Scroll = Fx.Base.extend({options: {overflown: [], offset: {x: 0, y: 0}, wheelStops: true}, initialize: function (b, a) {
     this.now = [];
     this.element = $(b);
-    this.bound = {stop: this.stop.bind(this, false)};
-    this.parent(a);
-    if (this.options.wheelStops) {
-        this.addEvent("onStart", function () {
-            document.addEvent("mousewheel", this.bound.stop)
-        }.bind(this));
-        this.addEvent("onComplete", function () {
-            document.removeEvent("mousewheel", this.bound.stop)
-        }.bind(this))
-    }
+        this.bound = {stop: this.stop.bind(this, false)};
+        this.parent(a);
+        if (this.options.wheelStops) {
+            this.addEvent("onStart", function () {
+                document.addEvent("wheel", this.bound.stop)
+            }.bind(this));
+            this.addEvent("onComplete", function () {
+                document.removeEvent("wheel", this.bound.stop)
+            }.bind(this))
+        }
 }, setNow: function () {
     for (var a = 0; a < 2; a++) {
         this.now[a] = this.compute(this.from[a], this.to[a])
@@ -1725,13 +1597,6 @@ Fx.Slide = Fx.Base.extend({options: {mode: "vertical"}, initialize: function (b,
     this.addEvent("onComplete", function () {
         this.open = (this.now[0] === 0)
     });
-    if (window.webkit419) {
-        this.addEvent("onComplete", function () {
-            if (this.open) {
-                this.element.remove().inject(this.wrapper)
-            }
-        })
-    }
 }, setNow: function () {
     for (var a = 0; a < 2; a++) {
         this.now[a] = this.compute(this.from[a], this.to[a])
@@ -1974,7 +1839,7 @@ Element.extend({makeDraggable: function (a) {
     return new Drag.Move(this, a)
 }});
 var XHR = new Class({options: {method: "post", async: true, onRequest: Class.empty, onSuccess: Class.empty, onFailure: Class.empty, urlEncoded: true, encoding: "utf-8", autoCancel: false, headers: {}}, setTransport: function () {
-    this.transport = (window.XMLHttpRequest) ? new XMLHttpRequest() : (window.ie ? new ActiveXObject("Microsoft.XMLHTTP") : false);
+    this.transport = new XMLHttpRequest();
     return this
 }, initialize: function (a) {
     this.setTransport().setOptions(a);
@@ -2535,11 +2400,9 @@ var SmoothScroll = Fx.Scroll.extend({initialize: function (b) {
             this.useLink(d, c)
         }
     }, this);
-    if (!window.webkit419) {
-        this.addEvent("onComplete", function () {
-            window.location.hash = this.anchor
-        })
-    }
+    this.addEvent("onComplete", function () {
+        window.location.hash = this.anchor
+    })
 }, useLink: function (b, a) {
     b.addEvent("click", function (c) {
         this.anchor = a;
@@ -2854,5 +2717,3 @@ var Accordion = Fx.Elements.extend({options: {onActive: Class.empty, onBackgroun
     return this.display(a)
 }});
 Fx.Accordion = Accordion;
-window.ie9 = window.XDomainRequest && window.performance;
-window.ie = window.ie && !window.ie9;
