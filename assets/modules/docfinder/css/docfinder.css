@@ -69,10 +69,6 @@ form#docfinder label {
     line-height: 22px;
 }
 
-* html form#docfinder label {
-    cursor: default;
-}
-
 form#docfinder label.text_label,
 form#docfinder strong.text_label {
     float: left;
@@ -80,10 +76,6 @@ form#docfinder strong.text_label {
     min-width: 120px;
 
     font-weight: bold;
-}
-
-* + html form#docfinder label.text_label {
-    padding-top: 2px;
 }
 
 form#docfinder input.text {
@@ -98,19 +90,9 @@ form#docfinder input.checkbox {
     margin-right: 5px;
 }
 
-* + html form#docfinder input.checkbox {
-    position: relative;
-    top: 0;
-}
-
 form#docfinder input.radio {
     position: relative;
     top: -2px;
-}
-
-* + html form#docfinder input.radio {
-    position: relative;
-    top: 0;
 }
 
 form#docfinder p.options {
@@ -134,14 +116,6 @@ form#docfinder img.icon {
     margin-left: 2px;
     margin-right: 5px;
     cursor: pointer;
-}
-
-* + html form#docfinder img.icon {
-    top: auto;
-}
-
-* + html form#docfinder p.replace img.icon {
-    margin-left: 0;
 }
 
 form#docfinder img.help {
@@ -189,26 +163,15 @@ form#docfinder #submit {
 form#docfinder div.submit_passive a,
 form#docfinder div.submit_passive a img {
     opacity: 0.5;
-    filter: Alpha(opacity=50);
 }
 
 form#docfinder div.submit_active a,
 form#docfinder div.submit_active a img {
     opacity: 1.0;
-    filter: Alpha(opacity=100);
 }
 
 form#docfinder a#submit_search input {
     display: none;
-}
-
-* + html form#docfinder div#submit a#submit_search input {
-    position: absolute;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    filter: Alpha(opacity=0);
-    width: 50px;
 }
 
 /* @end */
@@ -261,14 +224,6 @@ div#results_container table {
 
 div#results_container thead {
     background: transparent;
-}
-
-* html div#results_container table {
-    border-collapse: collapse;
-}
-
-* + html div#results_container table {
-    border-collapse: collapse;
 }
 
 div#results_container table th,
