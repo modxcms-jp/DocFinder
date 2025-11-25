@@ -1,14 +1,14 @@
 <?php
 	include("vars.php");
-	
+
 	$ts 		= $_POST["ts"];
-	
+
 	$m_ts		= $_POST["parent"] == "month" ? mktime(1, 1, 1, date("n", $ts), 1, date("Y", $ts)) : ""; //Selected month timestamp
-	
+
 	$c_ts 		= mktime(1, 1, 1, date("n"), 1, date("Y"));	//Timestamp current month
-	
+
 	$ts_year	= date("Y", $ts);
-	
+
 	$pr_ts		= mktime(1, 1, 1, 1, 1, $ts_year-1);
 	$nx_ts		= mktime(1, 1, 1, 1, 1, $ts_year+1);
 ?>

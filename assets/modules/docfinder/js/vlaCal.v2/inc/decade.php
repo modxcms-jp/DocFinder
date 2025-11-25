@@ -1,6 +1,6 @@
 <?php
 	include("vars.php");
-	
+
 	$decadeAr	= array( array(1979, 1990),
 						 array(1989, 2000),
 						 array(1999, 2010),
@@ -9,22 +9,22 @@
 
 	$ts 		= $_POST["ts"];
 	$ts_year	= date("Y", $ts);
-	
+
 	foreach($decadeAr as $d) {
 		if($ts_year == $decadeAr[sizeof($decadeAr)-1][1] || $ts_year > $d[0] && $ts_year < $d[1] || $ts_year == $decadeAr[0][0]) {
 			$decade = $d;
 			break;
 		}
 	}
-	
+
 	$y_ts		= $_POST["parent"] == "year" ? mktime(1, 1, 1, 1, 1, date("Y", $ts)) : ""; //Selected year timestamp
 	$m_ts		= $_POST["m_ts"];
-	
+
 	$c_ts 		= mktime(1, 1, 1, 1, 1, date("Y"));	//Timestamp current year
-		
+
 	$pr_ts		= mktime(1, 1, 1, 1, 1, $ts_year - 10);
 	$nx_ts		= mktime(1, 1, 1, 1, 1, $ts_year + 10);
-	
+
 	//Fix for border years to decade errors
 	if($ts_year == $decadeAr[sizeof($decadeAr)-1][1]) {
 		$decade = $decadeAr[sizeof($decadeAr)-1];
@@ -39,10 +39,10 @@
 		echo "\t<tr>";
 		for($y = 0; $y < 4; $y++) {
 			$i_ts = mktime(1, 1, 1, 1, 1, $year);
-			
+
 			if($i == 0 && $y == 0 || $i == 2 && $y == 3) echo '<td ts="'.$i_ts.'" m_ts="'.$m_ts.'" class="outsideYear">'.$year.'</td>';
 			else echo '<td ts="'.$i_ts.'" m_ts="'.$m_ts.'" class="'.($y_ts == $i_ts ? 'selected' : '').($c_ts == $i_ts ? 'current' : '').'">'.$year.'</td>';
-			
+
 			$year++;
 		}
 		echo "</tr>\n";

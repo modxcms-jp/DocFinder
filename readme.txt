@@ -1,8 +1,8 @@
 ---------------------------------------------------------------
 :: Doc Finder
 ----------------------------------------------------------------
-  
-	Short Description: 
+
+	Short Description:
         Ajax powered search and replace for the manager.
 
   Version:
@@ -16,14 +16,14 @@
 :: Description
 ----------------------------------------------------------------
 
-	At some point big MODx sites are difficult to handle with 
-	the document tree in the manager. Or you just want to check 
+	At some point big MODx sites are difficult to handle with
+	the document tree in the manager. Or you just want to check
 	all the documents of your site containing a specific text?
 
-	Doc Finder offers a fast Ajax powered search and replace for 
+	Doc Finder offers a fast Ajax powered search and replace for
 	the manager with neatly arranged results and one click edit.
-	
-	
+
+
 ----------------------------------------------------------------
 :: Copyright & Licencing
 ----------------------------------------------------------------
@@ -41,10 +41,10 @@
 
 	3. Create a new module called Doc Finder 1.7.
 
-	4. Insert 
-		
+	4. Insert
+
 			include(MODX_BASE_PATH . 'assets/modules/docfinder/docfinder.module.php');
-		
+
 		as module code.
 
 	5. Save the new Doc Finder module.
@@ -60,7 +60,7 @@
 
 	URL:   http://docfinder.trymodx.com/manager/
 	Login: demo_user / demo_user
- 
+
 
 ---------------------------------------------------------------
 :: Changelog:
@@ -74,7 +74,7 @@
 
 	08-April-10 (1.6)
 		-- Updated appearance for MODx Evolution
-		-- Updated and bugfixed calendar funtions. (Contribution by goldsky) 
+		-- Updated and bugfixed calendar funtions. (Contribution by goldsky)
 
 	22-January-09 (1.5.2)
 		-- Replaced PHP short tags with PHP long tags. (Contribution by goldsky)

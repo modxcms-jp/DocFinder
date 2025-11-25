@@ -7,10 +7,10 @@
 .vlaCalendarPicker {
 	position: absolute;
 	z-index: 999;
-	
+
 	margin-top: -5px;
 	margin-left: -2px;
-	
+
 	display: none;
 }
 

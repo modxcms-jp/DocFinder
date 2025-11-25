@@ -11,7 +11,7 @@
 **************************************************************/
 
 var sortableTable = new Class({
-							  
+
 	getOptions: function(){
 		return {
 			overCls: false,
@@ -32,12 +32,12 @@ var sortableTable = new Class({
 		this.tFoot = this.table.getElement('tfoot');
 		this.elements = this.tBody.getElements('tr');
 		this.filtered = false;
-		
+
 		/*for(i=0;i<10;i++){
 			this.elements.clone().injectInside(this.tBody);
 		}
 		this.elements = this.tBody.getElements('tr');*/
-		
+
 		this.elements.each(function(el,i){
 			if(this.options.overCls){
 				el.addEvent('mouseover', function(){
@@ -51,7 +51,7 @@ var sortableTable = new Class({
 				el.addEvent('click', options.onClick);
 			}
 		}, this);
-		
+
 		//setup header
 		this.tHead.getElements('th').each(function(el,i){
 			if(el.axis){
@@ -104,21 +104,21 @@ var sortableTable = new Class({
 					var2 = el.findData(b.getChildren()[i]);
 					//var1 = a.getChildren()[i].firstChild.data;
 					//var2 = b.getChildren()[i].firstChild.data;
-					
+
 					if(el.axis == 'number'){
 						var1 = parseFloat(var1);
 						var2 = parseFloat(var2);
-						
+
 						if(el.sortBy == 'ASC'){
 							return var1-var2;
 						}else{
 							return var2-var1;
 						}
-						
+
 					}else if(el.axis == 'string'){
 						var1 = var1.toUpperCase();
 						var2 = var2.toUpperCase();
-						
+
 						if(var1==var2){return 0};
 						if(el.sortBy == 'ASC'){
 							if(var1<var2){return -1};
@@ -126,38 +126,38 @@ var sortableTable = new Class({
 							if(var1>var2){return -1};
 						}
 						return 1;
-						
+
 					}else if(el.axis == 'date'){
 						var1 = parseFloat(el.getdate(var1));
 						var2 = parseFloat(el.getdate(var2));
-						
+
 						if(el.sortBy == 'ASC'){
 							return var1-var2;
 						}else{
 							return var2-var1;
 						}
-						
+
 					}else if(el.axis == 'currency'){
 						var1 = parseFloat(var1.substr(1).replace(',',''));
 						var2 = parseFloat(var2.substr(1).replace(',',''));
-						
+
 						if(el.sortBy == 'ASC'){
 							return var1-var2;
 						}else{
 							return var2-var1;
 						}
-						
+
 					}
-					
+
 				}
-				
+
 				if(i == this.options.sortOn){
 					el.fireEvent('click');
 				}
 			}
 		}, this);
 	},
-	
+
 	sort: function(index){
 		if(this.options.onStart){
 			this.fireEvent('onStart');
@@ -166,14 +166,14 @@ var sortableTable = new Class({
 		this.options.sortOn = index;
 		var header = this.tHead.getElements('th');
 		var el = header[index];
-		
+
 		header.each(function(e,i){
 			if(i != index){
 				e.removeClass('sortedASC');
 				e.removeClass('sortedDESC');
 			}
 		});
-		
+
 		if(el.hasClass('sortedASC')){
 			el.removeClass('sortedASC');
 			el.addClass('sortedDESC');
@@ -200,13 +200,13 @@ var sortableTable = new Class({
 		}else{
 			this.altRow();
 		}
-		
+
 		//
 		if(this.options.onComplete){
 			this.fireEvent('onComplete');
 		}
 	},
-	
+
 	altRow: function(){
 		this.elements.each(function(el,i){
 			if(i % 2){
@@ -216,7 +216,7 @@ var sortableTable = new Class({
 			}
 		});
 	},
-	
+
 	filteredAltRow: function(){
 		this.table.getElements('.'+this.options.filterSelectedCls).each(function(el,i){
 			if(i % 2){
@@ -226,12 +226,12 @@ var sortableTable = new Class({
 			}
 		});
 	},
-	
+
 	filter: function(form){
 		var form = $(form);
 		var col = 0;
 		var key = '';
-		
+
 		form.getChildren().each(function(el,i){
 			if(el.id == 'column'){
 				col = Number(el.value);
@@ -243,7 +243,7 @@ var sortableTable = new Class({
 				el.addEvent('click',this.clearFilter.bind(this));
 			}
 		}, this);
-		
+
 		if(key){
 		this.elements.each(function(el,i){
 			if(this.options.filterHide){
@@ -267,7 +267,7 @@ var sortableTable = new Class({
 		}
 		}
 	},
-	
+
 	clearFilter: function(){
 		this.elements.each(function(el,i){
 			el.removeClass(this.options.filterSelectedCls);

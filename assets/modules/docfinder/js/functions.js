@@ -1,24 +1,24 @@
 // ---------------------------------------------------------------
 // :: Doc Finder
 // ----------------------------------------------------------------
-//   
-// 	Short Description: 
+//
+// 	Short Description:
 //         Ajax powered search and replace for the manager.
-// 
+//
 //   Version:
 //         1.6.1
-// 
+//
 //   Created by:
 // 	    Bogdan Günther (http://www.medianotions.de - bg@medianotions.de)
-// 
-// 
+//
+//
 // ----------------------------------------------------------------
 // :: Copyright & Licencing
 // ----------------------------------------------------------------
-// 
+//
 //   GNU General Public License (GPL - http://www.gnu.org/copyleft/gpl.html)
-// 
-// 
+//
+//
 
 
 // define global parameters
