@@ -54,8 +54,9 @@ $options['moduleversion'] = '1.7';
 $options['theme'] = $modx->config['manager_theme'];
 $options['modx_charset'] = $modx->config['modx_charset'];
 $options['dir'] = ($modx->config['manager_direction'] == 'rtl' ? 'rtl' : 'ltr');
-$options['module_id'] = (int)$_GET['id'];
+$options['module_id'] = (int)getv('id', 0);
 $options['module_url'] = DF_PATH;
+$options['csrf_token'] = getCurrentCsrfToken();
 
 
 
@@ -184,6 +185,7 @@ else $searchOptions['replace_mode'] = false;
 if (isset($_POST['parents'])) $search['parents'] = $_POST['parents']; else if (!empty($_SESSION['docfinder_parents']) and !$update_session) $search['parents'] = $_SESSION['docfinder_parents']; else $search['parents'] = "";
 
 // set parents array
+$search['parentsArray'] = [];
 $parentsArray = explode(",", $search['parents']);
 foreach ($parentsArray as $parent) {
     $parent = trim($parent);

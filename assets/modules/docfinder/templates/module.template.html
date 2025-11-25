@@ -17,6 +17,7 @@
     <!-- global settings -->
     <script type="text/javascript">
         var module_url = "../[+options.module_url+]";
+        var csrf_token = "[+options.csrf_token+]";
     </script>
 
     <!-- Mootools JS Framework (http://www.mootools.net) -->
@@ -87,6 +88,7 @@
                 <!-- hidden fields for form and session control -->
                 <input type="hidden" name="checkform" id="checkform" value="load"/>
                 <input type="hidden" name="update_session" id="update_session" value="0"/>
+                <input type="hidden" name="csrf_token" id="csrf_token" value="[+options.csrf_token+]"/>
             </p>
 
             <!-- string replace -->
@@ -255,7 +257,7 @@
 </div>
 
 <!-- results part -->
-<div class="section">
+<div class="section" id="results_section" style="display: none;">
     <div class="sectionHeader">
 
         <!-- AJAX results -->

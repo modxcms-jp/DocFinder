@@ -189,6 +189,10 @@ var startAjaxSearch = function () {
     if (searchstring) $('search_string').setText(searchstring);
 
     // send form and update results
+    // Ensure CSRF token is included in the form
+    if (typeof csrf_token !== 'undefined') {
+        $('csrf_token').value = csrf_token;
+    }
     ajaxRequest = $('docfinder').send({
         update: $('results_container'),
         autoCancel: true,
@@ -197,7 +201,8 @@ var startAjaxSearch = function () {
             // hide AJAX load inidcator
             $('ajax_load_indicator').setStyles('display: none;');
 
-            // show results table
+            // show results section and table
+            $('results_section').setStyles('display: block;');
             $('results_container').setStyles('display: block;');
 
             // update histories
@@ -219,6 +224,11 @@ var startAjaxSearch = function () {
 function updateSearchHistory(type) {
     // set recognition for AJAX mode
     var querystring = "checkform=ajax_get_" + type + "History";
+
+    // add CSRF token to request
+    if (typeof csrf_token !== 'undefined') {
+        querystring += "&csrf_token=" + encodeURIComponent(csrf_token);
+    }
 
     // get update via AJAX
     historyAjaxUpdate = new Ajax(window.location.href, {
